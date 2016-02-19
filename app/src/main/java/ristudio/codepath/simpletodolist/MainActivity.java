@@ -34,45 +34,8 @@ public class MainActivity extends AppCompatActivity {
         lvItems = (ListView) findViewById(R.id.lvItems);
         populateArrayItem();
         lvItems.setAdapter(todoItemsAdapter);
-        etEditText = (EditText) findViewById(R.id.etNewItem);
-        lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                todoItems.remove(position);
-                todoItemsAdapter.notifyDataSetChanged();
-//                writeItems();
-                return false;
-            }
-        });
-    }
 
-    public void populateArrayItem(){
-        todoItems = new ArrayList<String >();
-        todoItems.add("Item 1");
-        todoItems.add("Item 2");
-        todoItems.add("Item 3");
-//        readItems();
-        todoItemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, todoItems);
-    }
-
-    private void readItems(){
-        File fileDir = getFilesDir();
-        File file = new File(fileDir,"todo.txt");
-        try {
-            todoItems = new ArrayList<>(FileUtils.readLines(file));
-        } catch (IOException e){
-
-        }
-    }
-
-    private void writeItems(){
-        File fileDir = getFilesDir();
-        File file = new File(fileDir,"todo.txt");
-        try {
-            FileUtils.writeLines(file, todoItems);
-        } catch (IOException e){
-
-        }
+        setupListViewListener();
     }
 
     @Override
@@ -98,8 +61,51 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onAddItem(View view) {
-        todoItemsAdapter.add(etEditText.getText().toString());
+        etEditText = (EditText) findViewById(R.id.etNewItem);
+        String itemText = etEditText.getText().toString();
+        todoItemsAdapter.add(itemText);
         etEditText.setText("");
-//        writeItems();
+        writeItems();
+    }
+
+    public void populateArrayItem(){
+//        todoItems = new ArrayList<>();
+//        todoItems.add("Item 1");
+//        todoItems.add("Item 2");
+//        todoItems.add("Item 3");
+        readItems();
+        todoItemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, todoItems);
+    }
+
+    private void setupListViewListener(){
+        lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                todoItems.remove(position);
+                todoItemsAdapter.notifyDataSetChanged();
+                writeItems();
+                return false;
+            }
+        });
+    }
+
+    private void readItems(){
+        File fileDir = getFilesDir();
+        File file = new File(fileDir,"todo.txt");
+        try {
+            todoItems = new ArrayList<>(FileUtils.readLines(file));
+        } catch (IOException e){
+            todoItems = new ArrayList<String>();
+        }
+    }
+
+    private void writeItems(){
+        File fileDir = getFilesDir();
+        File file = new File(fileDir,"todo.txt");
+        try {
+            FileUtils.writeLines(file, todoItems);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 }

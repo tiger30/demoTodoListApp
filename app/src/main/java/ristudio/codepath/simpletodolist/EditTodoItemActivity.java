@@ -6,12 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class EditTodoItemActivity extends AppCompatActivity {
 
-    int itemPosition;
-    String itemText;
-    EditText etEditItemContain;
+    private int itemPosition;
+    private String itemText;
+    private EditText etEditItemContain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,15 +33,19 @@ public class EditTodoItemActivity extends AppCompatActivity {
         itemText = getIntent().getStringExtra("itemText");
 
         etEditItemContain = (EditText) findViewById(R.id.etEditItemContain);
-        etEditItemContain.setText(itemText);
+        etEditItemContain.setText(itemText, TextView.BufferType.EDITABLE);
         etEditItemContain.setSelection(etEditItemContain.getText().length());
+
+        etEditItemContain.requestFocus();
     }
 
-    public void onSubmit(View view) {
-        Intent data = new Intent();
-        data.putExtra("editedItem", etEditItemContain.getText().toString());
-        data.putExtra("itemPosition", itemPosition);
+    public void onSaveClick (View view) {
+        etEditItemContain = (EditText)findViewById(R.id.etEditItemContain);
 
+        Intent data = new Intent();
+
+        data.putExtra("newItemText", etEditItemContain.getText().toString());
+        data.putExtra("editedItemPosition", itemPosition);
         setResult(RESULT_OK, data);
 
         this.finish();

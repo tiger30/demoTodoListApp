@@ -10,7 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".TodoListActivity"
-    tools:showIn="@layout/activity_main">
+    tools:showIn="@layout/activity_todo_list">
 
     <Button
         android:layout_width="wrap_content"

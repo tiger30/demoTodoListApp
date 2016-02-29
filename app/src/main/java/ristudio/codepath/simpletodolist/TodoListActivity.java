@@ -21,18 +21,18 @@ import java.util.ArrayList;
 
 public class TodoListActivity extends AppCompatActivity {
 
-    ListView lvItems;
-    EditText etEditText;
+    private ListView lvItems;
+    private EditText etEditText;
 
-    ArrayList<String> todoItems;
-    ArrayAdapter<String> todoItemsAdapter;
+    private ArrayList<String> todoItems;
+    private ArrayAdapter<String> todoItemsAdapter;
 
-    private final int REQUEST_CODE = 01;
+    private final int EDIT_ITEM_REQUEST_CODE = 01;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_todo_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -65,6 +65,29 @@ public class TodoListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == EDIT_ITEM_REQUEST_CODE){
+
+            String newItemText = data.getExtras().getString("newItemText");
+            int itemPosition = data.getExtras().getInt("editedItemPosition", 0);
+            //Toast the name to display  temporarily on screen
+            Toast.makeText(this, newItemText + "was edited", Toast.LENGTH_SHORT).show();
+
+            todoItems.set(itemPosition, newItemText);
+
+//            todoItemsAdapter.notifyDataSetChanged();
+//            writeItems();
+            notifyDataChangedAndSave();
+        }
+    }
+
+    public void populateArrayItem(){
+        readItems(); // load items list when start
+        todoItemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, todoItems);
+    }
+
     public void onAddItem(View view) {
         etEditText = (EditText) findViewById(R.id.etNewItem);
         String newTodoItemText = etEditText.getText().toString();
@@ -73,23 +96,14 @@ public class TodoListActivity extends AppCompatActivity {
         writeItems(); // save items when a new list item is added
     }
 
-    public void populateArrayItem(){
-//        todoItems = new ArrayList<>();
-//        todoItems.add("Item 1");
-//        todoItems.add("Item 2");
-//        todoItems.add("Item 3");
-        readItems(); // load items list when start
-        todoItemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, todoItems);
-    }
-
     private void setupListViewListener(){
         // Get event LongClick on a list item
         lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 todoItems.remove(position);
-                todoItemsAdapter.notifyDataSetChanged();
-                writeItems(); // save items when a new list item is removed
+
+                notifyDataChangedAndSave();
                 return true;
             }
         });
@@ -97,29 +111,19 @@ public class TodoListActivity extends AppCompatActivity {
         lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intentEditingItem = new Intent(TodoListActivity.this, EditTodoItemActivity.class);
-                intentEditingItem.putExtra("itemPosition", position);
-                intentEditingItem.putExtra("itemText", todoItems.get(position));
 
-                startActivityForResult(intentEditingItem, REQUEST_CODE);
+                launchEditView(position, todoItems.get(position));
             }
         });
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE){
-            String editedItem = data.getExtras().getString("editedItem");
-            int itemPosition = data.getExtras().getInt("itemPosition", 0);
-            //Toast the name to display  temporarily on screen
-            Toast.makeText(this, editedItem + "was edited", Toast.LENGTH_SHORT).show();
+    private void launchEditView (int itemPosition, String itemText){
+        Intent intentEditingItem = new Intent(TodoListActivity.this, EditTodoItemActivity.class);
+        intentEditingItem.putExtra("itemPosition", itemPosition);
+        intentEditingItem.putExtra("itemText", itemText);
 
-            todoItems.set(itemPosition, editedItem);
-            todoItemsAdapter.notifyDataSetChanged();
-            writeItems();
-        }
+        startActivityForResult(intentEditingItem, EDIT_ITEM_REQUEST_CODE);
     }
 
     private void readItems(){
@@ -142,5 +146,9 @@ public class TodoListActivity extends AppCompatActivity {
         }
     }
 
+    private void notifyDataChangedAndSave(){
+        todoItemsAdapter.notifyDataSetChanged();
+        writeItems();
+    }
 
 }

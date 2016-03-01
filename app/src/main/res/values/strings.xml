@@ -7,4 +7,13 @@
     <string name="instruction_activity_edit_item">Enter text below</string>
     <string name="item_contain_activity_edit_item" >Item Contain</string>
     <string name="btn_save_activity_edit_item">SAVE</string>
+    <string name="add_item_label">Enter a new item</string>
+    <string name="add_item_button_label">Add Item</string>
+    <string name="edit_item_title_label">Edit Item Below:</string>
+    <string name="save_button_label">Save</string>
+    <string name="task_name_title">Name</string>
+    <string name="task_deadline_title">Deadline</string>
+    <string name="task_description_title">Notes</string>
+    <string name="task_priority_title">Priority</string>
+    <string name="task_status_title">Status</string>
 </resources>

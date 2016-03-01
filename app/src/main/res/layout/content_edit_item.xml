@@ -12,43 +12,123 @@
     tools:context=".EditTodoItemActivity"
     tools:showIn="@layout/activity_edit_item">
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save_button_label"
+        android:id="@+id/btnSave"
+        android:onClick="onSubmit"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/tvEditItemInstruction"
-        android:hint="Edit Item Below:"
-        android:layout_alignParentTop="true"
+        android:text="@string/task_name_title"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/tvName"
+        android:layout_marginTop="37dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="@string/task_deadline_title"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/tvDeadline"
+        android:layout_marginTop="28dp"
+        android:layout_below="@+id/tvNotes"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/task_description_title"
+        android:id="@+id/tvNotes"
+        android:layout_below="@+id/etEditItem"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="30dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/task_priority_title"
+        android:id="@+id/tvPriority"
+        android:layout_above="@+id/btnSave"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="32dp" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/rgPriority"
+        android:orientation="horizontal"
+        android:layout_alignTop="@+id/tvPriority"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@+id/tvDeadline"
+        android:layout_toEndOf="@+id/tvDeadline"
+        android:layout_above="@+id/btnSave">
+
+
+        <RadioButton android:id="@+id/radio_low"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LOW"
+            android:checked="true" />
+
+        <RadioButton android:id="@+id/radio_med"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MEDIUM"
+            android:checked="false" />
+        <RadioButton android:id="@+id/radio_high"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HIGH"
+            android:checked="false" />
+
+    </RadioGroup>
+
+    <DatePicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dpDeadline"
+        android:layout_alignTop="@+id/tvDeadline"
+        android:layout_alignRight="@+id/rgPriority"
+        android:layout_alignEnd="@+id/rgPriority"
+        android:layout_toRightOf="@+id/tvDeadline"
+        android:layout_toEndOf="@+id/tvDeadline"
+        android:layout_above="@+id/rgPriority"
+        android:calendarViewShown="false"/>
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/etEditItemContain"
-        android:layout_below="@+id/tvEditItemInstruction"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:id="@+id/etNotes"
+        android:layout_alignBottom="@+id/tvNotes"
+        android:layout_alignLeft="@+id/dpDeadline"
+        android:layout_alignStart="@+id/dpDeadline"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <Button
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/btn_save_activity_edit_item"
-        android:id="@+id/btnSaveEditedItem"
-        android:onClick="onSaveClick"
-        android:layout_below="@+id/etEditItemContain"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true" />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Delete"
-        android:onClick="onDeleteEdit"
-        android:id="@+id/btnDelete"
-        android:layout_below="@+id/etEditItemContain"
-        android:layout_toRightOf="@+id/btnSaveEditedItem"
-        android:layout_toEndOf="@+id/btnSaveEditedItem" />
+        android:id="@+id/etEditItem"
+        android:layout_alignBottom="@+id/tvName"
+        android:layout_alignLeft="@+id/etNotes"
+        android:layout_alignStart="@+id/etNotes"
+        android:layout_alignRight="@+id/btnSave"
+        android:layout_alignEnd="@+id/btnSave" />
 
 </RelativeLayout>

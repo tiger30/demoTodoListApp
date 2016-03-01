@@ -3,51 +3,98 @@ package ristudio.codepath.simpletodolist;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.RadioGroup;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class EditTodoItemActivity extends AppCompatActivity {
 
-    private int itemPosition;
-    private String itemText;
-    private EditText etEditItemContain;
+    private EditText etEditItem;
+    private EditText etEditNotes;
+    private DatePicker dpDeadline;
+    private RadioGroup rgPriority;
+
+    private int pos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_item);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-        itemPosition = getIntent().getIntExtra("itemPosition", 0);
-        itemText = getIntent().getStringExtra("itemText");
+        String itemText = getIntent().getStringExtra("itemText");
+        String notes = getIntent().getStringExtra("itemNotes");
+        pos = getIntent().getIntExtra("itemPosition", 0);
+        TaskPriority p = TaskPriority.fromValue(getIntent().getIntExtra("priority", 0));
 
-        etEditItemContain = (EditText) findViewById(R.id.etEditItemContain);
-        etEditItemContain.setText(itemText, TextView.BufferType.EDITABLE);
-        etEditItemContain.setSelection(etEditItemContain.getText().length());
 
-        etEditItemContain.requestFocus();
+        long millis = getIntent().getLongExtra("dateInMillis", -1);
+        Calendar due = new GregorianCalendar();
+        due.setTimeInMillis(millis);
+        dpDeadline = (DatePicker) findViewById(R.id.dpDeadline);
+        dpDeadline.updateDate(due.get(Calendar.YEAR), due.get(Calendar.MONTH), due.get(Calendar.DAY_OF_MONTH));
+
+        etEditItem = (EditText) findViewById(R.id.etEditItem);
+        etEditItem.setText(itemText);
+
+        etEditNotes = (EditText) findViewById(R.id.etNotes);
+        etEditNotes.setText(notes);
+
+
+        rgPriority = (RadioGroup) findViewById(R.id.rgPriority);
+
+        switch (p) {
+            case LOW:
+                rgPriority.check(R.id.radio_low);
+                break;
+            case MEDIUM:
+                rgPriority.check(R.id.radio_med);
+                break;
+            case HIGH:
+                rgPriority.check(R.id.radio_high);
+                break;
+        }
+
+        etEditItem.requestFocus();
     }
 
-    public void onSaveClick (View view) {
-        etEditItemContain = (EditText)findViewById(R.id.etEditItemContain);
+    public void onSubmit(View v) {
+        Intent intent = new Intent();
 
-        Intent data = new Intent();
+        String newItemText = etEditItem.getText().toString();
+        String newItemNotes = etEditNotes.getText().toString();
+        Calendar deadline = new GregorianCalendar(dpDeadline.getYear(), dpDeadline.getMonth(), dpDeadline.getDayOfMonth());
+        int checked = rgPriority.getCheckedRadioButtonId();
+        TaskPriority p;
+        switch (checked) {
+            case R.id.radio_low:
+                p = TaskPriority.LOW;
+                break;
+            case R.id.radio_med:
+                p = TaskPriority.MEDIUM;
+                break;
+            case R.id.radio_high:
+                p = TaskPriority.HIGH;
+                break;
+            default:
+                p = TaskPriority.LOW;
+        }
 
-        data.putExtra("newItemText", etEditItemContain.getText().toString());
-        data.putExtra("editedItemPosition", itemPosition);
-        setResult(RESULT_OK, data);
+
+
+
+        intent.putExtra("itemText", newItemText);
+        intent.putExtra("itemNotes", newItemNotes);
+        intent.putExtra("itemPosition", pos);
+        intent.putExtra("dateInMillis", deadline.getTimeInMillis());
+        intent.putExtra("priority", p.ordinal());
+
+        setResult(RESULT_OK, intent);
 
         this.finish();
     }
+
 }

@@ -126,14 +126,16 @@ public class TodoListActivity extends AppCompatActivity {
     }
 
     public void onAddItem(View view) {
-        String itemText = etNewItem.getText().toString();
+        if (etNewItem.getText().length() > 0){
+            String itemText = etNewItem.getText().toString();
 
-        Task task = new Task(itemText, "");
-        items.add(task);
-        etNewItem.setText("");
+            Task task = new Task(itemText, "");
+            items.add(task);
+            etNewItem.setText("");
 
-        notifyDataChangedAndSave();
-        // writeItems();
+            notifyDataChangedAndSave();
+            // writeItems();
+        }
     }
 
     private void notifyDataChangedAndSave() {
